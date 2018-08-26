@@ -85,6 +85,8 @@ GEM
       virtus (>= 1.0.0)
     grape-swagger (0.31.0)
       grape (>= 0.16.2)
+    grape-swagger-rails (0.3.0)
+      railties (>= 3.2.12)
     i18n (1.1.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -211,6 +213,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   grape
   grape-swagger
+  grape-swagger-rails
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   postgresql
