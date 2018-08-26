@@ -111,9 +111,9 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    pg (0.21.0)
-    postgres (0.8.1)
-      pg (~> 0)
+    pg (1.1.0)
+    postgresql (1.0.0)
+      pg
     public_suffix (3.0.3)
     puma (3.12.0)
     rack (2.0.5)
@@ -213,7 +213,7 @@ DEPENDENCIES
   grape-swagger
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
-  postgres
+  postgresql
   puma (~> 3.7)
   rails (~> 5.1.6)
   sass-rails (~> 5.0)
