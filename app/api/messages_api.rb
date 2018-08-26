@@ -16,6 +16,17 @@ module Api
         return {status:1,message:'not found user',data:{}}
       end
     end
+
+    desc "一千米以内所有未过期的留言"
+    params do
+      requires :latitude, type: Float, desc: "用户纬度"
+      requires :longitude, type: Float, desc: "用户经度"
+    end
+    get "get_messages_by_km" do
+      {status: 0 ,data:[ {id:"message_id",latitude:"xxx",longitude:"xxxx",readed:'false'}]}
+    end
+
+
     get :ping do
       { data: "pong" }
     end
