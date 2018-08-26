@@ -1,24 +1,13 @@
-# README
+### users
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+- IME
+- nickname
 
-Things you may want to cover:
+### messages
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- user_id
+- content
+- position (Point)
+- limit_user_accounts
+- limit_days
+- is_delete
