@@ -1,0 +1,11 @@
+defaults: &defaults
+  validate_code_time: 2
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
