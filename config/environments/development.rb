@@ -26,6 +26,7 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.days }
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
