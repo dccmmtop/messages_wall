@@ -27,8 +27,22 @@ Rails.application.configure do
   end
 
   config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.days }
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.perform_caching = false
+  ActionMailer::Base.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default :charset => "utf-8"
+  ActionMailer::Base.smtp_settings = {
+    :address              => 'smtp.qq.com',
+    :port                 => 465,
+    :domain               => 'qq.com',
+    :user_name            => ENV['qq_mail_address'],
+    # 授权码
+    :password             =>  ENV['qq_mail_password'],
+    :authentication       => 'plain',
+    :ssl => true,
+    :enable_starttls_auto => true
+  }
 
   config.action_mailer.perform_caching = false
 
