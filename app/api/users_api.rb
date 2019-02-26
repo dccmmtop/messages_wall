@@ -5,7 +5,7 @@ module Api
     get :ping do
       { data: "pong" }
     end
-
+    desc "获取验证码"
     params do
       requires :email, type: String, desc: "邮箱"
     end
@@ -15,6 +15,7 @@ module Api
       {status: 0, message: User.get_validate_code(params[:email])}
     end
 
+    desc "注册"
     params do
       requires :email, type: String, desc: "邮箱"
       requires :name, type: String, desc: "昵称"
@@ -35,6 +36,7 @@ module Api
       end
     end
 
+    desc "登录"
     params do
       requires :email_name, type: String, desc: "邮箱或者用户名"
       requires :password, type: String, desc: "密码"
@@ -46,6 +48,42 @@ module Api
       return {status: 105, message: "密码错误"} unless @user.authenticate(params[:password])
       @user.regenerate_token
       return {status: 0, token: @user.token, nickname: @user.nickname, email: @user.email}
+    end
+
+    desc "修改昵称"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :nickname, type: String, desc: "新的昵称"
+    end
+    get :update_nickname do
+      @user = User.find_by_token(params[:token])
+      if @user
+        if @user.update(nickname: params[:nickname])
+          return {status: 0, message: '更新成功'}
+        else
+          return {status: 107, message: @user.errors.full_messages.join(",")}
+        end
+      else
+        return {status: 106, message: "用户不存在"}
+      end
+    end
+
+    desc "修改密码"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :old_password, type: String, desc: "旧密码"
+      requires :password, type: String, desc: "新密码"
+      requires :password_confirmation, type: String, desc: "重复密码"
+    end
+    post :update_password do
+      @user = User.find_by_token(params[:token])
+      return {status: 106, message: "用户不存在"} if @user.nil?
+      return {status: 108, message: "密码错误"} unless @user.authenticate(params[:old_password])
+      if @user.update(password: params[:password],password_confirmation: params[:password_confirmation])
+        return {status: 0, message: '更新成功'}
+      else
+        return {status: 109, message: @user.errors.full_messages.join(",")}
+      end
     end
   end
 end
