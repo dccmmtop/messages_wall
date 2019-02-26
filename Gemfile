@@ -36,6 +36,9 @@ gem 'redis-rails'
 gem  'settingslogic'
 gem 'grape'
 gem 'grape-swagger'
+
+gem 'rack-cors', :require => 'rack/cors'
+gem 'geokit-rails'
 group :development, :test do
   gem 'hirb'
   gem 'pry-rails'

@@ -76,6 +76,10 @@ GEM
     erubi (1.7.1)
     execjs (2.7.0)
     ffi (1.9.25)
+    geokit (1.13.1)
+    geokit-rails (2.3.1)
+      geokit (~> 1.5)
+      rails (>= 3.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     grape (1.1.0)
@@ -129,6 +133,7 @@ GEM
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-cors (1.0.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.1.6)
@@ -238,6 +243,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
+  geokit-rails
   grape
   grape-swagger
   grape-swagger-rails
@@ -247,6 +253,7 @@ DEPENDENCIES
   postgresql
   pry-rails
   puma (~> 3.7)
+  rack-cors
   rails (~> 5.1.6)
   redis-rails
   sass-rails (~> 5.0)

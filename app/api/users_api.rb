@@ -45,7 +45,7 @@ module Api
       return {status: 104, message: "用户不存在"} unless @user
       return {status: 105, message: "密码错误"} unless @user.authenticate(params[:password])
       @user.regenerate_token
-      return {status: 0, token: @user.token}
+      return {status: 0, token: @user.token, nickname: @user.nickname, email: @user.email}
     end
   end
 end
