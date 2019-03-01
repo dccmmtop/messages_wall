@@ -34,7 +34,7 @@ module Api
     end
     get "get_messages_by_km" do
       @origin = Geokit::LatLng.new(params[:latitude], params[:longitude])
-      @messages = Message.within(10,:origin => @origin).all
+      @messages = Message.within(1,:origin => @origin).all
       data = {}
       data[:status] = 0
       data[:message] = ""
