@@ -23,7 +23,7 @@ module Api
       if @message.save
         return {status: 0, message: "留言成功"}
       else
-        return {status: 201, message: @message.errors.full_messages}
+        return {status: 201, message: @message.errors.full_messages.join(',')}
       end
     end
 
