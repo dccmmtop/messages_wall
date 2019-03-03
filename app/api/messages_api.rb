@@ -10,6 +10,7 @@ module Api
       requires :longitude, type: String, desc: "经度"
       requires :limit_user_accounts, type: Integer, desc: "观看人数限制"
       requires :limit_days, type: Integer, desc: "时间限制"
+      requires :is_comment, type: Boolean, desc: "是否允许评论"
     end
     post "create" do 
       @user = User.find_by_token(params[:token])
@@ -19,7 +20,8 @@ module Api
                   latitude: params[:latitude],
                   longitude: params[:longitude],
                   limit_days: params[:limit_days].to_i,
-                  limit_user_accounts: params[:limit_user_accounts])
+                  limit_user_accounts: params[:limit_user_accounts],
+                  is_comment: params[:is_comment])
       if @message.save
         return {status: 0, message: "留言成功"}
       else
