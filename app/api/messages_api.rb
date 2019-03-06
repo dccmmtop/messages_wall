@@ -25,7 +25,7 @@ module Api
                   location: params[:location],
                   is_comment: params[:is_comment])
       if @message.save
-        @message.like.create(user_id: @user.id)
+        @message.likes.create(user_id: @user.id)
         return {status: 0, message: "留言成功"}
       else
         return {status: 201, message: @message.errors.full_messages.join(',')}
@@ -58,10 +58,12 @@ module Api
     get "get_messages_by_id" do
       u = User.find_by_token(params[:token])
       m = Message.find_by_id(params[:id])
+      m.read_by_user(u)
       if m
         return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: m.limit_days,
-                                    like_counts: m.like.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
-                                    user: {avatar: m.user.avatar.url, nickname: m.user.nickname}
+                                    like_counts: m.likes.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
+                                    published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),read_counts: m.reads.count,
+                                    user: {avatar: m.user.avatar.url.gsub("public",""), nickname: m.user.nickname}
         }}
       else
         return {status: 202, message: '没有找到'}
@@ -125,6 +127,33 @@ module Api
       return data
     end
 
+    desc "喜欢"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :message_id, type: Integer, desc: "message id"
+    end
+    get "like" do
+      u = User.find_by_token(params[:token])
+      return {status: 205, message: '没有这个用户'} if u.nil?
+      m = Message.find_by_id(params[:message_id])
+      return {status: 206, message: '留言不存在'} if m.nil?
+      m.like_by_user(u)
+      return {status: 0}
+    end
+
+    desc "取消喜欢"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :message_id, type: Integer, desc: "message id"
+    end
+    get "cancel_like" do
+      u = User.find_by_token(params[:token])
+      return {status: 205, message: '没有这个用户'} if u.nil?
+      m = Message.find_by_id(params[:message_id])
+      return {status: 206, message: '留言不存在'} if m.nil?
+      m.cancel_like_by_user(u)
+      return {status: 0}
+    end
     get :ping do
       { data: "pong" }
     end

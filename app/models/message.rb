@@ -6,7 +6,8 @@ class Message < ApplicationRecord
   default_scope {where(is_delete: false)}
   belongs_to :user
 
-  has_many :like, as: :likeable
+  has_many :likes, as: :likeable
+  has_many :reads
 
   acts_as_mappable :default_units => :kms,
     :default_formula => :sphere,
@@ -16,6 +17,24 @@ class Message < ApplicationRecord
 
   def liked_by_user?(user)
     return false if user.nil?
-    like.find_by_user_id(user.id) ? true : false
+    likes.find_by_user_id(user.id) ? true : false
+  end
+
+  def like_by_user(user)
+    if user && likes.find_by_user_id(user.id).nil?
+      likes.create(user_id: user.id)
+    end
+  end
+
+  def cancel_like_by_user(user)
+    if user && like = likes.find_by_user_id(user.id)
+      like.delete
+    end
+  end
+
+  def read_by_user(user)
+    if user && self.reads.find_by_user_id(user.id).nil?
+      self.reads.create(user_id: user.id)
+    end
   end
 end
