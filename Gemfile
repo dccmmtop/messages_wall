@@ -7,6 +7,9 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'letter_avatar'
+gem 'chinese_pinyin'
+gem 'carrierwave', '~> 1.0'
 gem 'rails', '~> 5.1.6'
 gem 'postgresql'
 # Use Puma as the app server

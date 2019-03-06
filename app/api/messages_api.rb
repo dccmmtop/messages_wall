@@ -11,6 +11,7 @@ module Api
       requires :limit_user_accounts, type: Integer, desc: "观看人数限制"
       requires :limit_days, type: Integer, desc: "时间限制"
       requires :is_comment, type: Boolean, desc: "是否允许评论"
+      requires :location, type: String, desc: "位置描述"
     end
     post "create" do 
       @user = User.find_by_token(params[:token])
@@ -21,8 +22,10 @@ module Api
                   longitude: params[:longitude],
                   limit_days: params[:limit_days].to_i,
                   limit_user_accounts: params[:limit_user_accounts],
+                  location: params[:location],
                   is_comment: params[:is_comment])
       if @message.save
+        @message.like.create(user_id: @user.id)
         return {status: 0, message: "留言成功"}
       else
         return {status: 201, message: @message.errors.full_messages.join(',')}
@@ -42,7 +45,7 @@ module Api
       data[:message] = ""
       data[:sum] = @messages.count
       data[:result] = @messages.map do |m|
-        {id: m.id, latitude: m.latitude, longitude: m.longitude, content: m.content, limit_days: m.limit_days, owner: m.user.id}
+        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location}
       end
       return data
     end
@@ -50,11 +53,16 @@ module Api
     desc "查看留言详细内容"
     params do
       requires :id, type: Integer, desc: "留言id"
+      requires :token, type: String, desc: "token"
     end
     get "get_messages_by_id" do
+      u = User.find_by_token(params[:token])
       m = Message.find_by_id(params[:id])
       if m
-        return {status: 0, result: {id: m.id, latitude: m.latitude, longitude: m.longitude, content: m.content, limit_days: m.limit_days}}
+        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: m.limit_days,
+                                    like_counts: m.like.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
+                                    user: {avatar: m.user.avatar.url, nickname: m.user.nickname}
+        }}
       else
         return {status: 202, message: '没有找到'}
       end

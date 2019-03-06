@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190303080925) do
+ActiveRecord::Schema.define(version: 20190305143802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.text "body"
+    t.integer "message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.string "likeable_type"
+    t.integer "likeable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
 
   create_table "messages", force: :cascade do |t|
     t.integer "user_id"
@@ -26,6 +41,8 @@ ActiveRecord::Schema.define(version: 20190303080925) do
     t.float "longitude"
     t.boolean "is_delete", default: false
     t.boolean "is_comment", default: true
+    t.string "location"
+    t.integer "read_count", default: 0
   end
 
   create_table "users", force: :cascade do |t|
@@ -37,6 +54,7 @@ ActiveRecord::Schema.define(version: 20190303080925) do
     t.string "password_digest"
     t.string "email"
     t.string "token"
+    t.string "avatar"
   end
 
 end

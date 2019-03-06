@@ -85,5 +85,21 @@ module Api
         return {status: 109, message: @user.errors.full_messages.join(",")}
       end
     end
+
+    desc "修改头像"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :avatar, type: File, desc: "图片"
+    end
+    post :update_avatar do
+      @user = User.find_by_token(params[:token])
+      return {status: 106, message: "用户不存在"} if @user.nil?
+      @user.avatar = params[:avatar]
+      if @user.save
+        return {status: 0, message: '更新成功'}
+      else
+        return {status: 110, message: @user.errors.full_messages.join(",")}
+      end
+    end
   end
 end
