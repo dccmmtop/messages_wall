@@ -1,5 +1,6 @@
 module Api
   class MessagesApi < Grape::API
+    MAXDAYS = 10000000
     format :json
     desc "create message"
 
@@ -16,16 +17,16 @@ module Api
     post "create" do 
       @user = User.find_by_token(params[:token])
       return {status:200,message:'没有找到该用户'} if @user.nil?
+      (params[:limit_days].nil? || params[:limit_days].strip.length == 0) ? params[:limit_days] = MessagesApi::MAXDAYS : '' 
       @message = Message.new(user_id: @user.id,
-                  content: params[:content],
-                  latitude: params[:latitude],
-                  longitude: params[:longitude],
-                  limit_days: params[:limit_days].to_i,
-                  limit_user_accounts: params[:limit_user_accounts],
-                  location: params[:location],
-                  is_comment: params[:is_comment])
+                             content: params[:content],
+                             latitude: params[:latitude],
+                             longitude: params[:longitude],
+                             limit_days: params[:limit_days].to_i,
+                             limit_user_accounts: params[:limit_user_accounts],
+                             location: params[:location],
+                             is_comment: params[:is_comment])
       if @message.save
-        @message.likes.create(user_id: @user.id)
         return {status: 0, message: "留言成功"}
       else
         return {status: 201, message: @message.errors.full_messages.join(',')}
@@ -60,7 +61,7 @@ module Api
       m = Message.find_by_id(params[:id])
       m.read_by_user(u)
       if m
-        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: m.limit_days,
+        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: (m.limit_days == MessagesApi::MAXDAYS  ? '' : m.limit_days),
                                     like_counts: m.likes.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
                                     published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),read_counts: m.reads.count,
                                     user: {avatar: m.user.avatar.url.gsub("public",""), nickname: m.user.nickname}
@@ -77,12 +78,13 @@ module Api
     end
     post "delete_messages_by_id" do
       u = User.find_by_token(params[:token])
+      return {status: 205, message: '删除失败，没有该用户'} if u.nil?
       m = Message.find_by("user_id = ? and id = ?", u.id, params[:id])
       if m
         m.update(is_delete: true)
         return {status: 0,message: "删除成功"}
       else
-        return {status: 202, message: '没有找到'}
+        return {status: 202, message: '删除失败，没有找到文章'}
       end
     end
 
@@ -91,16 +93,15 @@ module Api
       requires :token, type: String, desc: "token"
       requires :id, type: Integer, desc: "留言id"
       requires :content, type: String, desc: "message content"
-      requires :limit_user_accounts, type: Integer, desc: "观看人数限制"
       requires :limit_days, type: Integer, desc: "时间限制"
+      requires :is_comment, type: Boolean, desc: "是否允许评论"
     end
     post "update_message" do
       u = User.find_by_token(params[:token])
       return {status: 205, message: '没有这个用户'} if u.nil?
       m = Message.find_by("user_id = ? and id = ?", u.id, params[:id])
       return {status: 203, message: '没有找到'} if m.nil?
-      # info = {content: params[:content], latitude: params[:latitude], longitude: params[:longitude], limit_days: params[:limit_days].to_i, limit_user_accounts: params[:limit_user_accounts]}
-      info = {content: params[:content], limit_days: params[:limit_days].to_i, limit_user_accounts: params[:limit_user_accounts]}
+      info = {content: params[:content], limit_days: params[:limit_days].to_i, is_comment: params[:is_comment]}
       if m.update(info)
         return {status: 0,message: "更新成功"}
       else
