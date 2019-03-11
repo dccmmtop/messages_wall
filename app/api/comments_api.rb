@@ -13,7 +13,7 @@ module Api
       return {status:200,message:'没有找到该用户'} if @user.nil?
       @comment = Comment.new(user_id: @user.id, body: params[:content], message_id: params[:message_id])
       if @comment.save
-        return {status: 0, message: "评论成功"}
+        return {status: 0, message: "评论成功",comment:{"id-#{@comment.id}" => {user: {nickname: @comment.user.nickname, avatar: @comment.user.avatar.url.gsub("public","")},id: "id-#{@comment.id}",content: @comment.body, liked: false, published_at: @comment.created_at.strftime( "%Y-%m-%d %H:%M")}}}
       else
         return {status: 301, message: @comment.errors.full_messages.join(',')}
       end
@@ -29,7 +29,7 @@ module Api
       m = Message.find_by_id(params[:id])
       u = User.find_by_token(params[:token])
       if m
-        @comments = m.comments.order(created_at: :desc).page(params[:page]).per(3)
+        @comments = m.comments.order(created_at: :desc).page(params[:page]).per(5)
         res = {status: 0,comments:{},counts: m.comments.count, total_pages: @comments.total_pages}
         @comments.each do |com|
           res[:comments].merge!("id-#{com.id}" => {user: {nickname: com.user.nickname, avatar: com.user.avatar.url.gsub("public","")},id: "id-#{com.id}",content: com.body, liked: com.liked_by_user?(u), published_at: com.created_at.strftime( "%Y-%m-%d %H:%M")})
@@ -49,7 +49,7 @@ module Api
       u = User.find_by_token(params[:token])
       return {status: 205, message: '没有这个用户'} if u.nil?
       com = Comment.find_by_id(params[:comment_id])
-      return {status: 206, message: '评论不存在'} if m.nil?
+      return {status: 206, message: '评论不存在'} if com.nil?
       com.like_by_user(u)
       return {status: 0}
     end
@@ -63,25 +63,25 @@ module Api
       u = User.find_by_token(params[:token])
       return {status: 205, message: '没有这个用户'} if u.nil?
       com = Comment.find_by_id(params[:comment_id])
-      return {status: 206, message: '评论不存在'} if m.nil?
+      return {status: 206, message: '评论不存在'} if com.nil?
       com.cancel_like_by_user(u)
       return {status: 0}
     end
 
-    desc "删除留言"
+    desc "删除评论"
     params do
       requires :token, type: String, desc: "token"
-      requires :id, type: Integer, desc: "留言id"
+      requires :id, type: Integer, desc: "评论id"
     end
-    post "delete_messages_by_id" do
+    post "delete" do
       u = User.find_by_token(params[:token])
       return {status: 205, message: '删除失败，没有该用户'} if u.nil?
-      m = Message.find_by("user_id = ? and id = ?", u.id, params[:id])
-      if m
-        m.update(is_delete: true)
+      com = Comment.find_by("user_id = ? and id = ?", u.id, params[:id])
+      if com
+        com.delete
         return {status: 0,message: "删除成功"}
       else
-        return {status: 202, message: '删除失败，没有找到文章'}
+        return {status: 302, message: '删除失败，没有找到评论'}
       end
     end
 
