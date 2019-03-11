@@ -11,6 +11,8 @@ module MessagesWall
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.time_zone = 'Beijing'
+    config.active_record.default_timezone = :local
     config.autoload_paths += Dir[Rails.root.join('app')]
     config.middleware.insert_before 0, Rack::Cors do
       allow do

@@ -8,6 +8,7 @@ class Message < ApplicationRecord
 
   has_many :likes, as: :likeable
   has_many :reads
+  has_many :comments
 
   acts_as_mappable :default_units => :kms,
     :default_formula => :sphere,
