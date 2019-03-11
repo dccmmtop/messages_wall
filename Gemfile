@@ -12,6 +12,7 @@ gem 'chinese_pinyin'
 gem 'carrierwave', '~> 1.0'
 gem 'rails', '~> 5.1.6'
 gem 'postgresql'
+gem 'kaminari'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets

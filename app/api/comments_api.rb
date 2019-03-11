@@ -1,74 +1,71 @@
 module Api
-  class MessagesApi < Grape::API
-    MAXDAYS = 10000000
+  class CommentsApi < Grape::API
     format :json
-    desc "create message"
 
+    desc "create comments"
     params do
       requires :token, type: String, desc: "token"
-      requires :content, type: String, desc: "message content"
-      requires :latitude, type: String, desc: "纬度"
-      requires :longitude, type: String, desc: "经度"
-      requires :limit_user_accounts, type: Integer, desc: "观看人数限制"
-      requires :limit_days, type: Integer, desc: "时间限制"
-      requires :is_comment, type: Boolean, desc: "是否允许评论"
-      requires :location, type: String, desc: "位置描述"
+      requires :content, type: String, desc: "comment content"
+      requires :message_id, type: Integer, desc: "message id"
     end
     post "create" do 
       @user = User.find_by_token(params[:token])
       return {status:200,message:'没有找到该用户'} if @user.nil?
-      (params[:limit_days].nil?) ? params[:limit_days] = MessagesApi::MAXDAYS : '' 
-      @message = Message.new(user_id: @user.id,
-                             content: params[:content],
-                             latitude: params[:latitude],
-                             longitude: params[:longitude],
-                             limit_days: params[:limit_days].to_i,
-                             limit_user_accounts: params[:limit_user_accounts],
-                             location: params[:location],
-                             is_comment: params[:is_comment])
-      if @message.save
-        return {status: 0, message: "留言成功"}
+      @comment = Comment.new(user_id: @user.id, body: params[:content], message_id: params[:message_id])
+      if @comment.save
+        return {status: 0, message: "评论成功"}
       else
-        return {status: 201, message: @message.errors.full_messages.join(',')}
+        return {status: 301, message: @comment.errors.full_messages.join(',')}
       end
     end
 
-    desc "一千米以内所有未过期的留言"
-    params do
-      requires :latitude, type: Float, desc: "用户纬度"
-      requires :longitude, type: Float, desc: "用户经度"
-    end
-    get "get_messages_by_km" do
-      @origin = Geokit::LatLng.new(params[:latitude], params[:longitude])
-      @messages = Message.within(1,:origin => @origin).all
-      data = {}
-      data[:status] = 0
-      data[:message] = ""
-      data[:sum] = @messages.count
-      data[:result] = @messages.map do |m|
-        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location}
-      end
-      return data
-    end
-
-    desc "查看留言详细内容"
+    desc "查看某条留言的评论"
     params do
       requires :id, type: Integer, desc: "留言id"
+      requires :page, type: Integer, desc: "分页"
       requires :token, type: String, desc: "token"
     end
-    get "get_messages_by_id" do
-      u = User.find_by_token(params[:token])
+    get "get_messages_comments_by_id" do
       m = Message.find_by_id(params[:id])
-      m.read_by_user(u)
+      u = User.find_by_token(params[:token])
       if m
-        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: (m.limit_days == MessagesApi::MAXDAYS  ? '' : m.limit_days),
-                                    like_counts: m.likes.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
-                                    published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),read_counts: m.reads.count,comment_counts: m.comments.count,
-                                    user: {avatar: m.user.avatar.url.gsub("public",""), nickname: m.user.nickname}
-        }}
+        @comments = m.comments.order(created_at: :desc).page(params[:page]).per(3)
+        res = {status: 0,comments:{},counts: m.comments.count, total_pages: @comments.total_pages}
+        @comments.each do |com|
+          res[:comments].merge!("id-#{com.id}" => {user: {nickname: com.user.nickname, avatar: com.user.avatar.url.gsub("public","")},id: "id-#{com.id}",content: com.body, liked: com.liked_by_user?(u), published_at: com.created_at.strftime( "%Y-%m-%d %H:%M")})
+        end
+        return res
       else
-        return {status: 202, message: '没有找到'}
+        return {status: 202, message: '没有找到留言'}
       end
+    end
+
+    desc "喜欢"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :comment_id, type: Integer, desc: "comment id"
+    end
+    get "like" do
+      u = User.find_by_token(params[:token])
+      return {status: 205, message: '没有这个用户'} if u.nil?
+      com = Comment.find_by_id(params[:comment_id])
+      return {status: 206, message: '评论不存在'} if m.nil?
+      com.like_by_user(u)
+      return {status: 0}
+    end
+
+    desc "取消喜欢"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :comment_id, type: Integer, desc: "comment id"
+    end
+    get "cancel_like" do
+      u = User.find_by_token(params[:token])
+      return {status: 205, message: '没有这个用户'} if u.nil?
+      com = Comment.find_by_id(params[:comment_id])
+      return {status: 206, message: '评论不存在'} if m.nil?
+      com.cancel_like_by_user(u)
+      return {status: 0}
     end
 
     desc "删除留言"

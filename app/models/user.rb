@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :messages, dependent: :delete_all
 
   has_many :like,  dependent: :delete_all
+  has_many :comments
 
   validates_length_of :nickname, in: 2..10, message: "昵称长度要小于10大于2"
   validates_length_of :password, in: 6..16, message: "密码长度要小于16大于6", allow_nil: true
