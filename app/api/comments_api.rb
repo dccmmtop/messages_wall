@@ -76,12 +76,12 @@ module Api
     post "delete" do
       u = User.find_by_token(params[:token])
       return {status: 205, message: '删除失败，没有该用户'} if u.nil?
-      com = Comment.find_by("user_id = ? and id = ?", u.id, params[:id])
-      if com
+      com = Comment.find_by("id = ?",params[:id])
+      if com && (com.user.token == params[:token] || com.message.user.token == params[:token])
         com.delete
         return {status: 0,message: "删除成功"}
       else
-        return {status: 302, message: '删除失败，没有找到评论'}
+        return {status: 302, message: '删除失败'}
       end
     end
 
