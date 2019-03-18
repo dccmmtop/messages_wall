@@ -82,6 +82,7 @@ module Api
       if @user.update(password: params[:password],password_confirmation: params[:password_confirmation])
         return {status: 0, message: '更新成功'}
       else
+        p @user.errors
         return {status: 109, message: @user.errors.full_messages.join(",")}
       end
     end
@@ -92,14 +93,32 @@ module Api
       requires :avatar, type: File, desc: "图片"
     end
     post :update_avatar do
+      puts params[:avatar]
       @user = User.find_by_token(params[:token])
       return {status: 106, message: "用户不存在"} if @user.nil?
       @user.avatar = params[:avatar]
       if @user.save
-        return {status: 0, message: '更新成功'}
+        return {status: 0, message: '更新成功',avatar: @user.avatar.url.gsub("public","")}
       else
         return {status: 110, message: @user.errors.full_messages.join(",")}
       end
+    end
+    desc "我的所有留言"
+    params do
+      requires :token, type: String, desc: "token"
+      requires :page, type: Integer, desc: "页码"
+    end
+    get :messages do
+      @user = User.find_by_token(params[:token])
+      return {status: 106, message: "用户不存在"} if @user.nil?
+      @messages = @user.messages.page(params[:page]).per(20)
+      res = {total_pages: @messages.total_pages, result: [], status: 0}
+      @messages.each do |m|
+        res[:result] << {content: m.content[0,15] + "...", like_counts: m.likes.count, published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),comment_counts: m.comments.count, id: m.id,
+                         location: m.location
+        }
+      end
+      return res
     end
   end
 end

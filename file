@@ -1,0 +1,10 @@
++ user_id:integer 
++ content:text 
++ limit_user_accounts:integer 
++ limit_days:integer 
++ latitude:float 
++ longitude:float 
++ is_delete:boolean 
++ is_comment:boolean 
++ location:string 
++ read_count:integer 

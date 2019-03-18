@@ -32,7 +32,7 @@ module Api
         @comments = m.comments.order(created_at: :desc).page(params[:page]).per(5)
         res = {status: 0,comments:{},counts: m.comments.count, total_pages: @comments.total_pages}
         @comments.each do |com|
-          res[:comments].merge!("id-#{com.id}" => {user: {nickname: com.user.nickname, avatar: com.user.avatar.url.gsub("public","")},id: "id-#{com.id}",content: com.body, liked: com.liked_by_user?(u), published_at: com.created_at.strftime( "%Y-%m-%d %H:%M")})
+          res[:comments].merge!("id-#{com.id}" => {user: {nickname: com.user.nickname, avatar: com.user.avatar.url.gsub("public","") + "?time=#{u.updated_at.to_i}"},id: "id-#{com.id}",content: com.body, liked: com.liked_by_user?(u), published_at: com.created_at.strftime( "%Y-%m-%d %H:%M")})
         end
         return res
       else
