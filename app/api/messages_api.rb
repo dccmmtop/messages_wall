@@ -64,7 +64,7 @@ module Api
         return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: (m.limit_days == MessagesApi::MAXDAYS  ? '' : m.limit_days),
                                     like_counts: m.likes.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
                                     published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),read_counts: m.reads.count,comment_counts: m.comments.count,
-                                    user: {avatar: m.user.avatar.url.gsub("public","") + "?time=#{u.updated_at.to_i}", nickname: m.user.nickname}
+                                    user: {avatar: m.user.avatar.url.gsub("public","") + "?time=#{m.user.updated_at.to_i}", nickname: m.user.nickname}
         }}
       else
         return {status: 202, message: '没有找到'}
