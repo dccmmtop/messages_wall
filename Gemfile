@@ -45,6 +45,8 @@ gem 'rails-i18n'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'geokit-rails'
 
+gem 'bootstrap', '~> 4.3.1'
+gem 'jquery-rails'
 gem 'mini_magick'
 group :development, :test do
   gem 'hirb'
