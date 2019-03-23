@@ -22,4 +22,12 @@ class User < ApplicationRecord
   def self.get_validate_code(email)
     Rails.cache.read(email)
   end
+
+  def self.search(filter)
+    if filter.nil? || filter.strip.length == 0
+      all
+    else
+      where("nickname ~ ? or email ~ ?",filter,filter)
+    end
+  end
 end

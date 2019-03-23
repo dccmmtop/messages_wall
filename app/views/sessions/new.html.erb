@@ -1,0 +1,17 @@
+<div class='background'>
+
+  <h1>留言墙后台管理系统</h1>
+  <div class="login-form">
+    <div class="clear"> </div>
+    <div class="avtar">
+      <img src="<%= image_path('avtar.png') %>">
+    </div>
+    <%= form_tag(login_path,class:' ' ) do  %>
+      <input type="text" class="login-user-input" placeholder="Username" name='nickname' >
+      <div class="key">
+        <input type="password" placeholder="password" name='password' class='login-password'>
+      </div>
+      <%= submit_tag "登录",class:'login-submit'%>
+    <% end %>
+  </div>
+</div>

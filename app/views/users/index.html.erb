@@ -1,0 +1,32 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  <div class="card user-main">
+    <div class="card-header text-center">用户列表</div>
+    <div class="card-body">
+
+      <div class="search">
+        <%= form_tag( users_index_path,method: "get",class:'form-inline')  do %>
+          <div class="form-group">
+            <%= label_tag("filter","昵称/邮箱：") %>
+            <%= text_field_tag("filter", params[:filter],class:'form-control') %>
+          </div>
+          <%= submit_tag("查询",class:'btn btn-success query-submit') %>
+        <% end %>
+      </div>
+      <div class="row">
+      <% @users.each do |user| %>
+        <div class="card-plus col-md-3">
+        <div class="card card-in" title="查看留言">
+          <%= image_tag(user.avatar,class:'card-img') %>
+          <div class="card-body text-center">
+            <p class="card-title"><%= user.nickname %></p>
+            <p class="info"><%= user.messages.count %> 篇留言 •  <%= user.like.count %> 喜欢</p>
+          </div>
+        </div>
+        </div>
+      <% end %>
+      </div>
+    </div> 
+    <%= paginate @users %>
+  </div>
+</div>

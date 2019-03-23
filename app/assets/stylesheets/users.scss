@@ -1,0 +1,41 @@
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.user-main{
+  margin-top: 60px;
+}
+.query-submit{
+  margin-left: 10px;
+}
+
+.search{
+  margin-bottom: 30px;
+}
+.card-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    text-align: center;
+    margin: 0 auto;
+}
+.card-plus{
+  padding: 0 10px;
+  cursor: pointer;
+}
+.card-in{
+  padding-top: 10px;
+  margin-top: 10px;
+  &:hover{
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+}
+p.info {
+  font-size: 12px;
+  color: gray;
+  margin-top: -8px;
+}
