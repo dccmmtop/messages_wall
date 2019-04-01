@@ -46,4 +46,9 @@ class Message < ApplicationRecord
       where("content ~ ?",filter)
     end
   end
+
+  def destroy
+    update(is_delete: true)
+    comments.update_all(is_delete: true)
+  end
 end

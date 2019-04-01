@@ -36,7 +36,7 @@ div.comment-content{
   margin-left: 10px;
 }
 a.comment-user-name{
-  display: block;
+  // display: block;
 }
 div.comment-body{
   margin-top: 10px;
@@ -45,4 +45,10 @@ div.comment-body{
 div.comment-item {
   padding-top: 5px;
   border-bottom: 1px solid #ccc;
+}
+i{
+  color: #404040;
+}
+.comment-trash{
+  margin-left: 10px;
 }

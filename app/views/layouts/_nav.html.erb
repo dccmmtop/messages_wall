@@ -5,7 +5,7 @@
         <% if controller_name == 'users' %>
           <a class="nav-link active">用户</a>
         <% else %>
-          <a class="nav-link" href="<%= users_index_path %>">用户</a>
+          <a class="nav-link" href="<%= users_path %>">用户</a>
         <% end %>
       </li>
       <li class="nav-item">
@@ -16,7 +16,7 @@
         <% end %>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">退出</a>
+        <%= link_to "退出", logout_path, class:'nav-link', data: {confirm: "确定退出吗？"}%>
       </li>
     </ul>
   </div>

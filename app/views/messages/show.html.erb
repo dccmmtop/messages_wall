@@ -32,11 +32,20 @@
         <p><%= line %></p>
         <% end %>
     </div>
+    <div class="card-footer">
+      <%= link_to  message_path(@message), method: "delete", data: {confirm: "确定删除本条留言及其评论吗？"}, title: '删除留言' do %>
+        <%= icon('fas', 'trash-alt') %>
+      <% end %>
+      &nbsp
+      <%= link_to  user_path(@message.user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' do %>
+        <%= icon('fas', 'user-times') %>
+      <% end %>
+    </div>
   </div>
   <br></br>
   <div class="card comment-main">
-    <div class="card-header">
-      共收到<%= @message.comments.count %>条回复
+    <div class="card-header comment">
+      共收到<span><%= @message.comments.count %></span>条回复
     </div>
     <div class="card-body">
       <% @comments.each do |comment| %>
@@ -46,6 +55,11 @@
           </div>
           <div class="comment-content">
             <%= link_to comment.user.nickname, "#", class:'comment-user-name' %>
+
+            <%= link_to  comment_path(comment), method: "delete", data: {confirm: "确定删除本条评论吗？"}, title: '删除', remote: true, class: 'comment-delete' do %>
+              <%= icon('fas', 'trash-alt',class: 'comment-trash') %>
+            <% end %>
+            </br>
             <span class="text-muted" title="发布日期"><%= comment.created_at.strftime("%Y-%m-%d") %></span>
             ·
             <span class="text-muted">
