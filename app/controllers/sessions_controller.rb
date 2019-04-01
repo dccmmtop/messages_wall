@@ -6,11 +6,11 @@ class SessionsController < ApplicationController
 
   def create
     @user = User.find_by_nickname(params[:nickname])
-    if @user && @user.authenticate(params[:password])
+    if @user && @user.authenticate(params[:password]) && @user.is_admin?
       log_in @user
       redirect_to users_index_url
     else
-      redirect_to login_url,alert:'用户名或者密码错误'
+      redirect_to login_url,alert:'用户名或者密码错误或不是管理员'
     end 
   end
 

@@ -30,4 +30,8 @@ class User < ApplicationRecord
       where("nickname ~ ? or email ~ ?",filter,filter)
     end
   end
+
+  def is_admin?
+    return admin
+  end
 end

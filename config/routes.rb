@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
+
   get 'users/index'
+
+  resources :messages
 
   root "sessions#new"
 

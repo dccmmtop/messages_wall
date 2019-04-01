@@ -129,7 +129,7 @@ img {
   -o-border-bottom-right-radius: 15px;
   cursor: pointer;
 }
-input[type="submit"]:hover {
+.login-submit:hover {
   background: #ff2775;
   border-bottom-left-radius: 15px;
   -webkit-border-bottom-left-radius: 15px;
@@ -152,4 +152,8 @@ label.lbl-1 {
   float: right;
   border-radius: 50%;
   margin: 16px 10px 0px 0px;
+}
+
+.margin-top{
+  margin-top: 30px;
 }
