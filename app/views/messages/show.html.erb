@@ -1,0 +1,77 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  <div class="card user-main">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-1">
+          <%= image_tag(@message.user.avatar.url,class:'author-img rounded-circle') %>
+        </div>
+        <div class="col-md-11">
+          <h4>
+            <span class="author-name"><%= @message.user.nickname %></span>
+          </h4>
+          <div class="location">
+            <%= image_tag "location_info.png" , class: 'location'%>
+            <%= @message.location %>
+          </div>
+          <div class="info">
+            <span class="timeago" title="发布日期"><%= @message.created_at.strftime("%Y-%m-%d") %></span>
+            ·
+            <%= @message.reads.count %> 次阅读
+            ·
+            <%= @message.likes.count %> 个喜欢
+            ·
+            <%= @message.comments.count %> 条评论
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <% @message.content.split("\n").each do |line| %>
+        <p><%= line %></p>
+        <% end %>
+    </div>
+    <div class="card-footer">
+      <%= link_to  message_path(@message), method: "delete", data: {confirm: "确定删除本条留言及其评论吗？"}, title: '删除留言' do %>
+        <%= icon('fas', 'trash-alt') %>
+      <% end %>
+      &nbsp
+      <%= link_to  user_path(@message.user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' do %>
+        <%= icon('fas', 'user-times') %>
+      <% end %>
+    </div>
+  </div>
+  <br></br>
+  <div class="card comment-main">
+    <div class="card-header comment">
+      共收到<span><%= @message.comments.count %></span>条回复
+    </div>
+    <div class="card-body">
+      <% @comments.each do |comment| %>
+        <div class="comment-item row">
+          <div class="comment-user">
+            <%= image_tag comment.user.avatar.url, class:'comment-user-img' %>
+          </div>
+          <div class="comment-content">
+            <%= link_to comment.user.nickname, "#", class:'comment-user-name' %>
+
+            <%= link_to  comment_path(comment), method: "delete", data: {confirm: "确定删除本条评论吗？"}, title: '删除', remote: true, class: 'comment-delete' do %>
+              <%= icon('fas', 'trash-alt',class: 'comment-trash') %>
+            <% end %>
+            </br>
+            <span class="text-muted" title="发布日期"><%= comment.created_at.strftime("%Y-%m-%d") %></span>
+            ·
+            <span class="text-muted">
+              <%= comment.likes.count %> 喜欢
+            </span>
+            <div class="comment-body">
+              <% comment.body.split("\n").each do |line| %>
+                <p><%= line %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

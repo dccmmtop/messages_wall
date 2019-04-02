@@ -87,6 +87,8 @@ GEM
     erubi (1.7.1)
     execjs (2.7.0)
     ffi (1.9.25)
+    font-awesome-sass (5.8.1)
+      sassc (>= 1.11)
     geokit (1.13.1)
     geokit-rails (2.3.1)
       geokit (~> 1.5)
@@ -291,6 +293,7 @@ DEPENDENCIES
   carrierwave (~> 1.0)
   chinese_pinyin
   coffee-rails (~> 4.2)
+  font-awesome-sass (~> 5.8.1)
   geokit-rails
   grape
   grape-swagger

@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+
   has_secure_password(validations: false)
   has_secure_token
 
@@ -15,6 +16,8 @@ class User < ApplicationRecord
   validates_uniqueness_of  :email,message: "已被注册"
   validates_uniqueness_of  :nickname,message: "已被占用"
 
+  default_scope {where(is_delete: false)}
+
   mount_uploader :avatar, AvatarUploader
 
   include LetterAvatar::AvatarHelper
@@ -29,5 +32,15 @@ class User < ApplicationRecord
     else
       where("nickname ~ ? or email ~ ?",filter,filter)
     end
+  end
+
+  def is_admin?
+    return admin
+  end
+
+  def destroy
+    update(is_delete: true)
+    messages.update_all(is_delete: true)
+    comments.update_all(is_delete: true)
   end
 end

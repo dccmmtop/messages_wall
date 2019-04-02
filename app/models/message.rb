@@ -38,4 +38,17 @@ class Message < ApplicationRecord
       self.reads.create(user_id: user.id)
     end
   end
+  
+  def self.search(filter)
+    if filter.nil? || filter.strip.length == 0
+      all
+    else
+      where("content ~ ?",filter)
+    end
+  end
+
+  def destroy
+    update(is_delete: true)
+    comments.update_all(is_delete: true)
+  end
 end

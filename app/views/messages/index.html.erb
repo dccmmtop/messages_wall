@@ -1,0 +1,23 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  </br>
+  <%= notice_message %>
+  <div class="card user-main">
+    <div class="card-header text-center">留言</div>
+    <div class="card-body">
+
+      <div class="search">
+        <%= form_tag( messages_path,method: "get",class:'form-inline')  do %>
+          <div class="form-group">
+            <%= label_tag("filter","内容：") %>
+            <%= text_field_tag("filter", params[:filter],class:'form-control') %>
+          </div>
+          <%= submit_tag("查询",class:'btn btn-success query-submit') %>
+        <% end %>
+      </div>
+      <%= render 'messages_index', messages: @messages %>
+    </div> 
+
+    <%= paginate @messages %>
+  </div>
+</div>

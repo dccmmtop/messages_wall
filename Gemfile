@@ -41,6 +41,7 @@ gem  'settingslogic'
 gem 'grape'
 gem 'grape-swagger'
 gem 'rails-i18n'
+gem 'font-awesome-sass', '~> 5.8.1'
 
 gem 'rack-cors', :require => 'rack/cors'
 gem 'geokit-rails'

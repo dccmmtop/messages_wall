@@ -5,7 +5,7 @@
     <div class="card-body">
 
       <div class="search">
-        <%= form_tag( users_index_path,method: "get",class:'form-inline')  do %>
+        <%= form_tag( users_path,method: "get",class:'form-inline')  do %>
           <div class="form-group">
             <%= label_tag("filter","昵称/邮箱：") %>
             <%= text_field_tag("filter", params[:filter],class:'form-control') %>
@@ -14,17 +14,29 @@
         <% end %>
       </div>
       <div class="row">
-      <% @users.each do |user| %>
-        <div class="card-plus col-md-3">
-        <div class="card card-in" title="查看留言">
-          <%= image_tag(user.avatar,class:'card-img') %>
-          <div class="card-body text-center">
-            <p class="card-title"><%= user.nickname %></p>
-            <p class="info"><%= user.messages.count %> 篇留言 •  <%= user.like.count %> 喜欢</p>
+        <% @users.each do |user| %>
+          <div class="card-plus col-md-3">
+            <div class="card card-in">
+              <%= image_tag(user.avatar,class:'card-img') %>
+              <div class="card-body text-center">
+                <p class="card-title"><%= user.nickname %></p>
+                <p class="info"><%= user.messages.count %> 篇留言 •  <%= user.like.count %> 喜欢</p>
+
+                <%= link_to  user_path(user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' , class:'user-delete' do %>
+                  <%= icon('fas', 'user-times') %>
+                <% end %>
+                &nbsp
+                <%= link_to  messages_path(user_id: user.id), title: '用户所有留言' do %>
+                  <%= icon('fas', 'envelope-open-text') %>
+                <% end %>
+                &nbsp
+                <%= link_to  comments_path(user_id: user.id),title: '用户所有评论' do %>
+                  <%= icon('fas', 'comments') %>
+                <% end %>
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-      <% end %>
+        <% end %>
       </div>
     </div> 
     <%= paginate @users %>

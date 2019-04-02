@@ -1,0 +1,54 @@
+// Place all the styles related to the messages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.main-content{
+  margin-top: 30px;
+}
+.media-body {
+    flex: 1;
+}
+.media {
+    display: flex;
+    align-items: flex-start;
+}
+.topic-detail .info {
+    color: #adaaa8;
+    font-size: 13px;
+}
+.info .user-name {
+    color: #404040;
+    font-size: 14px;
+}
+
+
+.author-name,.comment-user-name {
+  color: black;
+}
+img.location{
+  width: 25px;
+  height: 25px;
+}
+img.comment-user-img{
+  width: 50px;
+  height: 50px;
+}
+div.comment-content{
+  margin-left: 10px;
+}
+a.comment-user-name{
+  // display: block;
+}
+div.comment-body{
+  margin-top: 10px;
+}
+
+div.comment-item {
+  padding-top: 5px;
+  border-bottom: 1px solid #ccc;
+}
+i{
+  color: #404040;
+}
+.comment-trash{
+  margin-left: 10px;
+}
