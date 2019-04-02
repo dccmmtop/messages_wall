@@ -22,6 +22,14 @@ class Comment < ApplicationRecord
     end
   end
 
+  def self.search(filter)
+    if filter.nil? || filter.strip.length == 0
+      all
+    else
+      where("body ~ ?",filter)
+    end
+  end
+
   def destroy
     update(is_delete: true)
   end

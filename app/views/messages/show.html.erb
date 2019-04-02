@@ -8,7 +8,7 @@
         </div>
         <div class="col-md-11">
           <h4>
-            <a data-author="true" class="author-name" href="#"><%= @message.user.nickname %></a>
+            <span class="author-name"><%= @message.user.nickname %></span>
           </h4>
           <div class="location">
             <%= image_tag "location_info.png" , class: 'location'%>
@@ -19,10 +19,9 @@
             ·
             <%= @message.reads.count %> 次阅读
             ·
-            <%= @message.likes.count %> 喜欢
+            <%= @message.likes.count %> 个喜欢
             ·
             <%= @message.comments.count %> 条评论
-            ·
           </div>
         </div>
       </div>

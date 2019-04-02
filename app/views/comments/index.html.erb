@@ -1,0 +1,51 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  </br>
+  <%= notice_message %>
+  <div class="card user-main">
+    <div class="card-header text-center">评论</div>
+    <div class="card-body">
+      <div class="search">
+        <%= form_tag( comments_path,method: "get",class:'form-inline')  do %>
+          <div class="form-group">
+            <%= label_tag("filter","内容：") %>
+            <%= text_field_tag("filter", params[:filter],class:'form-control') %>
+          </div>
+          <%= submit_tag("查询",class:'btn btn-success query-submit') %>
+        <% end %>
+      </div>
+
+      <% @comments.each do |comment| %>
+        <% next if comment.message.nil? %>
+        <div class="comment-item row">
+          <div class="comment-user">
+            <%= image_tag comment.user.avatar.url, class:'comment-user-img' %>
+          </div>
+          <div class="comment-content">
+            <span class="comment-user-name"> <%= comment.user.nickname %> </span> 
+            在
+            <%= link_to comment.message.content.truncate(20) , message_path(comment.message)%>
+            评论
+            </br>
+            <span class="text-muted" title="发布日期"><%= comment.created_at.strftime("%Y-%m-%d") %></span>
+            ·
+            <span class="text-muted">
+              <%= comment.likes.count %> 喜欢
+            </span>
+            ·
+            <%= link_to  comment_path(comment), method: "delete", data: {confirm: "确定删除本条评论吗？"}, title: '删除', remote: true, class: 'comment-delete' do %>
+              <%= icon('fas', 'trash-alt',class: 'comment-trash') %>
+            <% end %>
+            <div class="comment-body">
+              <% comment.body.split("\n").each do |line| %>
+                <p><%= line %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div> 
+
+    <%= paginate @comments %>
+  </div>
+</div>
