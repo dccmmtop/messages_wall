@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :login
   def index
     params[:page] ||= 1
-    @users = User.search(params[:filter]).order(created_at: :desc).page(params[:page])
+    @users = User.search(params[:filter]).order(created_at: :desc).page(params[:page]).per(24)
   end
 
   def destroy
