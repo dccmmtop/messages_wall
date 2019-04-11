@@ -46,7 +46,7 @@ module Api
       data[:message] = ""
       data[:sum] = @messages.count
       data[:result] = @messages.map do |m|
-        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location}
+        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location, user_avatar: m.user.avatar.url + "?time=#{m.user.updated_at.to_i}"}
       end
       return data
     end
