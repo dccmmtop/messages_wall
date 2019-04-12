@@ -51,4 +51,9 @@ class Message < ApplicationRecord
     update(is_delete: true)
     comments.update_all(is_delete: true)
   end
+
+  def repeat(distance)
+    origin = Geokit::LatLng.new(latitude, longitude)
+    @messages = Message.within(distance * 0.001,:origin => origin).where("now() - created_at < interval '1' day * limit_days")
+  end
 end
