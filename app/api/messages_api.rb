@@ -1,6 +1,6 @@
 module Api
   class MessagesApi < Grape::API
-    MAXDAYS = 10000000
+    MAX_LIMIT_DAYS = 1000000
     format :json
     desc "create message"
 
@@ -17,7 +17,6 @@ module Api
     post "create" do 
       @user = User.find_by_token(params[:token])
       return {status:200,message:'没有找到该用户'} if @user.nil?
-      (params[:limit_days].nil?) ? params[:limit_days] = MessagesApi::MAXDAYS : '' 
       @message = Message.new(user_id: @user.id,
                              content: params[:content],
                              latitude: params[:latitude],
@@ -33,20 +32,21 @@ module Api
       end
     end
 
-    desc "一千米以内所有未过期的留言"
+    desc "N米以内所有未过期的留言"
     params do
       requires :latitude, type: Float, desc: "用户纬度"
       requires :longitude, type: Float, desc: "用户经度"
+      requires :distance, type: Float, desc: "N米以内"
     end
     get "get_messages_by_km" do
       @origin = Geokit::LatLng.new(params[:latitude], params[:longitude])
-      @messages = Message.within(1,:origin => @origin).all
+      @messages = Message.within(params[:distance] * 0.001,:origin => @origin).where("now() - created_at < interval '1' day * limit_days")
       data = {}
       data[:status] = 0
       data[:message] = ""
       data[:sum] = @messages.count
       data[:result] = @messages.map do |m|
-        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location, user_avatar: m.user.avatar.url + "?time=#{m.user.updated_at.to_i}"}
+        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location, user_avatar: m.user.avatar.url + "?time=#{m.user.updated_at.to_i}", user_nickname: m.user.nickname.truncate(4), content: m.content.truncate(20),created_at: m.created_at.strftime( "%Y-%m-%d %H:%M")}
       end
       return data
     end
@@ -61,7 +61,7 @@ module Api
       m = Message.find_by_id(params[:id])
       m.read_by_user(u)
       if m
-        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: (m.limit_days == MessagesApi::MAXDAYS  ? '' : m.limit_days),
+        return {status: 0, result: {id: m.id, location: m.location, content: m.content, limit_days: (m.limit_days),
                                     like_counts: m.likes.count,liked: m.liked_by_user?(u),is_comment: m.is_comment,
                                     published_at: m.created_at.strftime( "%Y-%m-%d %H:%M"),read_counts: m.reads.count,comment_counts: m.comments.count,
                                     user: {avatar: m.user.avatar.url.gsub("public","") + "?time=#{m.user.updated_at.to_i}", nickname: m.user.nickname}
@@ -101,7 +101,8 @@ module Api
       return {status: 205, message: '没有这个用户'} if u.nil?
       m = Message.find_by("user_id = ? and id = ?", u.id, params[:id])
       return {status: 203, message: '没有找到'} if m.nil?
-      info = {content: params[:content], limit_days: params[:limit_days].to_i, is_comment: params[:is_comment]}
+      limit_days = (params[:limit_days].to_i >= MAX_LIMIT_DAYS ? MAX_LIMIT_DAYS : params[:limit_days].to_i)
+      info = {content: params[:content], limit_days: limit_days, is_comment: params[:is_comment]}
       if m.update(info)
         return {status: 0,message: "更新成功"}
       else
