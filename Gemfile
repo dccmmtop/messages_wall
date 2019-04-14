@@ -7,6 +7,7 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'simple_form'
 gem 'whenever'
 gem 'letter_avatar'
 gem 'chinese_pinyin'

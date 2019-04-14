@@ -39,6 +39,10 @@
       <%= link_to  user_path(@message.user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' do %>
         <%= icon('fas', 'user-times') %>
       <% end %>
+      &nbsp
+      <%= link_to  new_notification_path(user_id: @message.user.id,message_id: @message.id, content: "‘#{@message.content.truncate(15)}’ \n"), title: '向该用户发布消息' do %>
+        <%= icon('fas', 'bullhorn') %>
+      <% end %>
     </div>
   </div>
   <br></br>

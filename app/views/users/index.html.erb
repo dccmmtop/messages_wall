@@ -33,6 +33,10 @@
                 <%= link_to  comments_path(user_id: user.id),title: '用户所有评论' do %>
                   <%= icon('fas', 'comments') %>
                 <% end %>
+                &nbsp
+                <%= link_to  new_notification_path(user_id: user.id), title: '向该用户发布消息' do %>
+                  <%= icon('fas', 'bullhorn') %>
+                <% end %>
               </div>
             </div>
           </div>

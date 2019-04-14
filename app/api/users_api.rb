@@ -47,7 +47,7 @@ module Api
       return {status: 104, message: "用户不存在"} unless @user
       return {status: 105, message: "密码错误"} unless @user.authenticate(params[:password])
       @user.regenerate_token
-      return {status: 0, token: @user.token, nickname: @user.nickname, email: @user.email, avatar: @user.avatar.url.gsub("public","")}
+      return {status: 0, token: @user.token, nickname: @user.nickname, email: @user.email, avatar: @user.avatar.url + "?updated_at=#{@user.updated_at.to_i}"}
     end
 
     desc "修改昵称"
@@ -98,7 +98,7 @@ module Api
       return {status: 106, message: "用户不存在"} if @user.nil?
       @user.avatar = params[:avatar]
       if @user.save
-        return {status: 0, message: '更新成功',avatar: @user.avatar.url.gsub("public","")}
+        return {status: 0, message: '更新成功',avatar: @user.avatar.url + "?updated_at=#{@user.updated_at.to_i}"}
       else
         return {status: 110, message: @user.errors.full_messages.join(",")}
       end
