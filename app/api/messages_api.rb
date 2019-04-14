@@ -37,16 +37,24 @@ module Api
       requires :latitude, type: Float, desc: "用户纬度"
       requires :longitude, type: Float, desc: "用户经度"
       requires :distance, type: Float, desc: "N米以内"
+      requires :days, type: Integer, desc: "N天以内"
+      requires :filter_text, type: String, allow_blank: true, desc: "搜索"
+
     end
     get "get_messages_by_km" do
       @origin = Geokit::LatLng.new(params[:latitude], params[:longitude])
-      @messages = Message.within(params[:distance] * 0.001,:origin => @origin).where("now() - created_at < interval '1' day * limit_days")
+      params[:days] ||= 7
+      if(params[:filter_text].length > 0)
+      @messages = Message.within(params[:distance] * 0.001,:origin => @origin).where("now() - created_at < interval '1' day * limit_days").where("now() - created_at < interval '1' day * #{params[:days]}").where("content ~ ?",params[:filter_text]).order("created_at desc")
+      else
+      @messages = Message.within(params[:distance] * 0.001,:origin => @origin).where("now() - created_at < interval '1' day * limit_days").where("now() - created_at < interval '1' day * #{params[:days]}").order("created_at desc")
+      end
       data = {}
       data[:status] = 0
       data[:message] = ""
       data[:sum] = @messages.count
       data[:result] = @messages.map do |m|
-        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location, user_avatar: m.user.avatar.url + "?time=#{m.user.updated_at.to_i}", user_nickname: m.user.nickname.truncate(4), content: m.content.truncate(20),created_at: m.created_at.strftime( "%Y-%m-%d %H:%M")}
+        {id: m.id, latitude: m.latitude, longitude: m.longitude, location: m.location, user_avatar: m.user.avatar.url + "?time=#{m.user.updated_at.to_i}", user_nickname: m.user.nickname.truncate(4), content: m.content.truncate(15),created_at: m.created_at.strftime( "%Y-%m-%d %H:%M")}
       end
       return data
     end
