@@ -1,7 +1,6 @@
 class NotificationsController < ApplicationController
-
   def index(*args)
-    
+
   end
 
   def new
@@ -12,7 +11,7 @@ class NotificationsController < ApplicationController
     if params[:nickname] == "all_user"
       time_id = Time.now.to_i
       User.select(:id).each do |user|
-        @notification = Notification.new(user_id: user.id,content: params[:notification][:content], admin_id: params[:admin],category: 'all_user',time_id: time_id)
+        @notification = Notification.new(user_id: user.id,content: params[:notification][:content], admin_id: params[:admin],category: 'all_user',time_id: time_id,is_read: false)
         if @notification.save
         else
           render :new
@@ -26,7 +25,7 @@ class NotificationsController < ApplicationController
       else
         user_id = User.find_by_nickname(params[:nickname]).id
       end
-      @notification = Notification.new(user_id: user_id,content: params[:notification][:content], admin_id: params[:admin], time_id: Time.now.to_i)
+      @notification = Notification.new(user_id: user_id,content: params[:notification][:content], admin_id: params[:admin], time_id: Time.now.to_i, message_id: params[:message_id], is_read: false)
       if @notification.save
         redirect_to notifications_url, alert:'发布成功'
       else

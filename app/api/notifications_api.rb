@@ -14,7 +14,7 @@ module Api
       result = {}
       result = {status: 0,data:[]}
       Notification.where("user_id = ?",user.id).order("created_at desc").each do |notice|
-        result[:data] << {content: notice.content.truncate(15), created_at: notice.created_at.strftime( "%Y-%m-%d %H:%M"), is_read: notice.is_read}
+        result[:data] << {id: notice.id, content: notice.content.truncate(15), created_at: notice.created_at.strftime( "%Y-%m-%d %H:%M"), is_read: notice.is_read}
       end
       return result
     end
@@ -30,9 +30,23 @@ module Api
         return {status: 401, message: '没有找到用户'}
       end
       result = {}
-      result = {status: 0}
-      notice = Notification.where("user_id = ? and id  = ?",user.id,params[:id])
-      result[:data] = {content: notice.content, created_at: notice.created_at.strftime( "%Y-%m-%d %H:%M"), is_read: notice.is_read}
+      notice = Notification.find_by("user_id = ? and id  = ?",user.id,params[:id])
+      if(notice)
+        notice.update(is_read: true)
+        if(notice.message_id)
+          message = Message.find_by_id(notice.message_id)
+          result = {status: 0,content: notice.content, created_at: notice.created_at.strftime( "%Y-%m-%d %H:%M"), is_read: true, message_id: notice.message_id,
+                    current_text: message.content,
+                    limit_days:message.limit_days,
+                    is_comment: message.is_comment,
+                    location:message.location,
+          }
+        else
+          result = {status: 0,content: notice.content, created_at: notice.created_at.strftime( "%Y-%m-%d %H:%M"), is_read: true, message_id: nil}
+        end
+      else
+        result = { status: 404, message: "没有找个消息"}
+      end
       return result
     end
 
@@ -40,7 +54,7 @@ module Api
     params do
       requires :token, type: String, desc: "token"
     end
-    get "clear_notice" do
+    get "clear_notices" do
       user = User.find_by_token(params[:token])
       if(user.nil?)
         return {status: 401, message: '没有找到用户'}

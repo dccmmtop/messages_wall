@@ -13,10 +13,8 @@
       <% end %>
     </div>
     <% if params[:message_id] %>
-      <div class="form-group">
         <%= f.label "修改留言对象" %>
-        <input type="text" class="form-control" name="message_id" value="<%= params[:message_id] %>" disabled>
-      </div>
+        <input type="text" class="form-control" name="message_id" value="<%= params[:message_id] %>" readonly>
     <% end %>
     <input type="text" name="admin" value="<%= current_user.id %>" hidden>
     <div class="form-group">
