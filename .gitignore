@@ -23,4 +23,4 @@
 .byebug_history
 
 /public/system/letter_avatars/*
-
+/public/uploads/user/avatar/*
