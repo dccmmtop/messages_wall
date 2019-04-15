@@ -7,6 +7,7 @@ class User < ApplicationRecord
 
   has_many :like,  dependent: :delete_all
   has_many :comments
+  has_many :notifications
 
   validates_length_of :nickname, in: 2..10, message: "长度要小于10大于1"
   validates_length_of :password, in: 6..16, message: "长度要小于16大于5", allow_nil: true
@@ -42,5 +43,6 @@ class User < ApplicationRecord
     update(is_delete: true)
     messages.update_all(is_delete: true)
     comments.update_all(is_delete: true)
+    notifications.update_all(is_delete: true)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401135142) do
+ActiveRecord::Schema.define(version: 20190414064617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,19 @@ ActiveRecord::Schema.define(version: 20190401135142) do
     t.boolean "is_comment", default: true
     t.string "location"
     t.integer "read_count", default: 0
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "admin_id"
+    t.text "content"
+    t.boolean "is_read"
+    t.boolean "is_delete", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "message_id"
+    t.string "category"
+    t.integer "time_id"
   end
 
   create_table "reads", force: :cascade do |t|

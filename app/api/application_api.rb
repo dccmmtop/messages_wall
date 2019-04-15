@@ -12,6 +12,7 @@ module Api
     mount Api::MessagesApi => '/messages'
     mount Api::UsersApi => '/users'
     mount Api::CommentsApi => '/comments'
+    mount Api::NotificationsApi => '/notifications'
     add_swagger_documentation
   end
 end

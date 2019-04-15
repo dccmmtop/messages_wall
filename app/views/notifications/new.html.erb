@@ -1,0 +1,26 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  </br>
+  <%# <%= notice_message %>
+  <%= render "shares/error_messages", target: @notification %>
+  <%= simple_form_for(@notification) do |f|%>
+    <div class="form-group">
+      <%= f.label "发布对象(用户昵称，所有用户： all_user)" %>
+      <% if params[:user_id] %>
+        <input type="text" class="form-control" id="user_nickname" name="nickname" placeholder="all_user" value="<%= @notification.user.nickname%>" readonly>
+      <% else %>
+        <input type="text" class="form-control" id="user_nickname" name="nickname" placeholder="all_user">
+      <% end %>
+    </div>
+    <% if params[:message_id] %>
+        <%= f.label "修改留言对象" %>
+        <input type="text" class="form-control" name="message_id" value="<%= params[:message_id] %>" readonly>
+    <% end %>
+    <input type="text" name="admin" value="<%= current_user.id %>" hidden>
+    <div class="form-group">
+      <%= f.label "内容" %>
+      <%= f.text_area :content , rows: 10, palceholer: "对用户发布的消息", class: 'form-control',autofocus: true %>
+    </div>
+    <%= f.submit "发布", class:'btn btn-primary col-md-3'%>
+  <% end %>
+</div>
