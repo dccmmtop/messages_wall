@@ -1,0 +1,103 @@
+<%= render 'layouts/nav'%>
+<div class="container">
+  <%= notice_message %>
+  <div class="card user-main">
+    <div class="card-header text-center">用户权限详情</div>
+    <div class="card-body card-user-show">
+
+      <div class="row">
+        <div>
+          <%= image_tag(@user.avatar,class:'show-card-img') %>
+        </div>
+        <div class="user-info">
+          <div class="title"><%= @user.nickname %></div>
+          <div class="">
+            <%= link_to  messages_path(user_id: @user.id), title: '用户所有留言' do %>
+              <%= icon('fas', 'envelope-open-text' ,class:'text-muted') %>
+            <% end %>
+            &nbsp
+            <%= link_to  comments_path(user_id: @user.id),title: '用户所有评论' do %>
+              <%= icon('fas', 'comments',class:'text-muted') %>
+            <% end %>
+            &nbsp
+            <%= link_to  new_notification_path(user_id: @user.id), title: '向该用户发布消息' do %>
+              <%= icon('fas', 'bullhorn',class:'text-muted') %>
+            <% end %>
+          </div>
+          <div class="limit-status">
+            <span class="text-muted">
+              状态：
+            </span>
+            <% if @user.is_limit? %>
+              <span class="limit text-danger" title= "此时用户不能发表留言和评论">
+                禁言中
+              </span>
+              <%= link_to "解除", edit_limit_path( @user.limits.not_relived) , class: 'btn btn-span' %>
+            <% else %>
+              <span class="limit text-success" title="用户可以正常发表留言和评论">
+                正常
+              </span>
+            <% end %>
+            &nbsp
+            <%= link_to  user_path(@user), method: "delete", data: {confirm: "将从从系统删除该用户"}, title: '注销用户账号' , class:'user-delete text-danger' do %>
+              注销账号
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <hr>
+
+      <% unless @user.is_limit?  %>
+        <div class="row">
+          <div class="new-limit col-md-12">
+            <%= simple_form_for(@limit) do |f| %>
+              <%= f.input :day, label: "禁言时长(天)" %>
+              <%= f.input :reason ,label: "禁言原因"%>
+              <%= f.hidden_field :user_id ,value: @user.id%>
+              <%= f.submit "确定", class:'btn btn-primary' %>
+              <span class="text-muted">禁言后用户不能发表留言和评论</span>
+            <% end %>
+          </div>
+        </div>
+        <hr class="new-limit">
+      <% end %>
+      <div class="row">
+        <div class="limit-records col-md-12">
+          <h5>禁言记录</h5>
+          <table class="table table-hover">
+            <tr>
+              <th>编号</th>
+              <th>禁言原因</th>
+              <th>禁言日期</th>
+              <th>禁言期限(天)</th>
+              <th>状态</th>
+            </tr>
+            <% @limits.each do |limit| %>
+              <tr>
+                <td><%= limit.id %></td>
+                <td><%= limit.reason %></td>
+                <td><%= limit.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td><%= limit.day %></td>
+                <td>
+                  <% if limit.is_relived? %>
+                    <span class="text-success">
+                      已解除
+                    </span>
+                  <% else %>
+                    <span class="text-danger">
+                      未解除
+                    </span>
+
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+
+        </div>
+      </div>
+
+    </div>
+  </div> 
+  <%# <%= paginate @limits %>
+</div>

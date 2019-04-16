@@ -1,5 +1,6 @@
 <%= render 'layouts/nav'%>
 <div class="container">
+  <%= notice_message %>
   <div class="card user-main">
     <div class="card-header text-center">用户列表</div>
     <div class="card-body">
@@ -22,7 +23,7 @@
                 <p class="card-title"><%= user.nickname %></p>
                 <p class="info"><%= user.messages.count %> 篇留言 •  <%= user.like.count %> 喜欢</p>
 
-                <%= link_to  user_path(user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' , class:'user-delete' do %>
+                <%= link_to  user_path(user), title: '设置用户权限' , class:'user-delete' do %>
                   <%= icon('fas', 'user-times') %>
                 <% end %>
                 &nbsp
