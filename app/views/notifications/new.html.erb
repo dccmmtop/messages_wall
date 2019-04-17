@@ -1,7 +1,7 @@
 <%= render 'layouts/nav'%>
 <div class="container">
   </br>
-  <%# <%= notice_message %>
+  <%= notice_message %>
   <%= render "shares/error_messages", target: @notification %>
   <%= simple_form_for(@notification) do |f|%>
     <div class="form-group">

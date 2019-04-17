@@ -36,7 +36,7 @@
         <%= icon('fas', 'trash-alt') %>
       <% end %>
       &nbsp
-      <%= link_to  user_path(@message.user), method: "delete", data: {confirm: "确定注销用户账号？"}, title: '注销用户账号' do %>
+      <%= link_to  user_path(@message.user), title: '设置用户权限' , class:'user-delete' do %>
         <%= icon('fas', 'user-times') %>
       <% end %>
       &nbsp

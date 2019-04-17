@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :like,  dependent: :delete_all
   has_many :comments
   has_many :notifications
+  has_many :limits
 
   validates_length_of :nickname, in: 2..10, message: "长度要小于10大于1"
   validates_length_of :password, in: 6..16, message: "长度要小于16大于5", allow_nil: true
@@ -37,6 +38,14 @@ class User < ApplicationRecord
 
   def is_admin?
     return admin
+  end
+
+  def is_limit?
+    limits.not_relived.present?
+  end
+
+  def current_limit
+    limits.is_relived
   end
 
   def destroy
