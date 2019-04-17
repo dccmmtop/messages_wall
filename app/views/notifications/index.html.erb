@@ -2,4 +2,41 @@
 <div class="container">
   </br>
   <%= notice_message %>
+    <!-- <tr> -->
+    <!--   <th>编号</th> -->
+    <!--   <th>对象</th> -->
+    <!--   <th>内容</th> -->
+    <!--   <th>时间</th> -->
+    <!--   <th>删除</th> -->
+    <!-- </tr> -->
+    <div id="accordion">
+      <% @notices.each do |notice| %>
+        <div class="card">
+          <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#collapse-<%= notice.id %>">
+              <div class="row">
+                <div class="col-md-4">
+                  发布对象：<%= notice.user_name %>
+                </div>
+                <div class="col-md-4">
+                 <%= notice.content.truncate(20) %>
+                </div>
+                <div class="col-md-4">
+                  <span class="span-delete span-danger text-danger" data-id="<%= notice.id %>">删除</span>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div id="collapse-<%= notice.id %>" class="collapse hide" data-parent="#accordion">
+            <div class="card-body">
+              <div>
+                <%= notice.content %>
+              </div>
+              </br>
+              <p class="text-muted">发布时间：<%= notice.created_at.strftime( "%Y-%m-%d %H:%M") %></p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
 </div>
