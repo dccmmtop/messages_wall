@@ -11,6 +11,7 @@ module Api
     post "create" do 
       @user = User.find_by_token(params[:token])
       return {status:200,message:'没有找到该用户'} if @user.nil?
+      return {status:210,message: "你的某些言论被认定#{@user.limits.not_relived.reason},#{(@user.limits.not_relived.created_at + @user.limits.not_relived.day.day).strftime("%Y-%m-%d %H:%M")} 前不能发表留言和评论,详情请留意系统消息"} if @user.is_limit?
       @comment = Comment.new(user_id: @user.id, body: params[:content], message_id: params[:message_id])
       if @comment.save
         return {status: 0, message: "评论成功",comment:{"id-#{@comment.id}" => {user: {nickname: @comment.user.nickname, avatar: @comment.user.avatar.url + "?updated_at=#{@comment.user.updated_at.to_i}"},id: "id-#{@comment.id}",content: @comment.body, liked: false, published_at: @comment.created_at.strftime( "%Y-%m-%d %H:%M")}}}
